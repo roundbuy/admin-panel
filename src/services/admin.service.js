@@ -81,6 +81,60 @@ const adminService = {
 
   // ==================== CATEGORIES ====================
   getCategories: () => api.get('/admin/categories'),
+
+  // ==================== CURRENCIES ====================
+  getCurrencies: () => api.get('/admin/currencies'),
+  createCurrency: (data) => api.post('/admin/currencies', data),
+  updateCurrency: (id, data) => api.put(`/admin/currencies/${id}`, data),
+  deleteCurrency: (id) => api.delete(`/admin/currencies/${id}`),
+
+  // ==================== COUNTRIES ====================
+  getCountries: () => api.get('/admin/countries'),
+  createCountry: (data) => api.post('/admin/countries', data),
+  updateCountry: (id, data) => api.put(`/admin/countries/${id}`, data),
+  deleteCountry: (id) => api.delete(`/admin/countries/${id}`),
+
+  // ==================== CATEGORIES ====================
+  getCategories: () => api.get('/admin/categories'),
+  createCategory: (data) => api.post('/admin/categories', data),
+  updateCategory: (id, data) => api.put(`/admin/categories/${id}`, data),
+  deleteCategory: (id) => api.delete(`/admin/categories/${id}`),
+
+  // ==================== AD ACTIVITIES ====================
+  getAdActivities: () => api.get('/admin/ad-activities'),
+  createAdActivity: (data) => api.post('/admin/ad-activities', data),
+  updateAdActivity: (id, data) => api.put(`/admin/ad-activities/${id}`, data),
+  deleteAdActivity: (id) => api.delete(`/admin/ad-activities/${id}`),
+
+  // ==================== AD CONDITIONS ====================
+  getAdConditions: () => api.get('/admin/ad-conditions'),
+  createAdCondition: (data) => api.post('/admin/ad-conditions', data),
+  updateAdCondition: (id, data) => api.put(`/admin/ad-conditions/${id}`, data),
+  deleteAdCondition: (id) => api.delete(`/admin/ad-conditions/${id}`),
+
+  // ==================== AD AGES ====================
+  getAdAges: () => api.get('/admin/ad-ages'),
+  createAdAge: (data) => api.post('/admin/ad-ages', data),
+  updateAdAge: (id, data) => api.put(`/admin/ad-ages/${id}`, data),
+  deleteAdAge: (id) => api.delete(`/admin/ad-ages/${id}`),
+
+  // ==================== AD GENDERS ====================
+  getAdGenders: () => api.get('/admin/ad-genders'),
+  createAdGender: (data) => api.post('/admin/ad-genders', data),
+  updateAdGender: (id, data) => api.put(`/admin/ad-genders/${id}`, data),
+  deleteAdGender: (id) => api.delete(`/admin/ad-genders/${id}`),
+
+  // ==================== AD SIZES ====================
+  getAdSizes: () => api.get('/admin/ad-sizes'),
+  createAdSize: (data) => api.post('/admin/ad-sizes', data),
+  updateAdSize: (id, data) => api.put(`/admin/ad-sizes/${id}`, data),
+  deleteAdSize: (id) => api.delete(`/admin/ad-sizes/${id}`),
+
+  // ==================== AD COLORS ====================
+  getAdColors: () => api.get('/admin/ad-colors'),
+  createAdColor: (data) => api.post('/admin/ad-colors', data),
+  updateAdColor: (id, data) => api.put(`/admin/ad-colors/${id}`, data),
+  deleteAdColor: (id) => api.delete(`/admin/ad-colors/${id}`),
 };
 
 export default adminService;

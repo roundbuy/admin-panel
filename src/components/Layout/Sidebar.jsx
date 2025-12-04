@@ -22,6 +22,15 @@ import {
   Settings as SettingsIcon,
   Shield as ShieldIcon,
   Api as ApiIcon,
+  AttachMoney as CurrencyIcon,
+  Public as CountryIcon,
+  Category as CategoryIcon,
+  FitnessCenter as ActivityIcon,
+  CheckCircle as ConditionIcon,
+  HourglassEmpty as AgeIcon,
+  Wc as GenderIcon,
+  Straighten as SizeIcon,
+  Palette as ColorIcon,
   ExpandLess,
   ExpandMore,
 } from '@mui/icons-material';
@@ -33,6 +42,7 @@ const Sidebar = () => {
   const location = useLocation();
   const [plansOpen, setPlansOpen] = React.useState(true);
   const [contentOpen, setContentOpen] = React.useState(true);
+  const [settingsOpen, setSettingsOpen] = React.useState(false);
 
   const isActive = (path) => location.pathname === path;
 
@@ -54,11 +64,27 @@ const Sidebar = () => {
       children: [
         { title: 'Advertisements', path: '/content/advertisements' },
         { title: 'Banners', path: '/content/banners' },
+        { title: 'Demo Advertisements', path: '/content/demo-advertisements' },
+        { title: 'Categories', path: '/content/categories' },
+        { title: 'Ad Activities', path: '/content/ad-activities' },
+        { title: 'Ad Conditions', path: '/content/ad-conditions' },
+        { title: 'Ad Ages', path: '/content/ad-ages' },
+        { title: 'Ad Genders', path: '/content/ad-genders' },
+        { title: 'Ad Sizes', path: '/content/ad-sizes' },
+        { title: 'Ad Colors', path: '/content/ad-colors' },
       ],
     },
     { title: 'Subscriptions', path: '/subscriptions', icon: <SubscriptionsIcon /> },
-    { title: 'Languages', path: '/languages', icon: <LanguageIcon /> },
-    { title: 'Settings', path: '/settings', icon: <SettingsIcon /> },
+    {
+      title: 'Settings',
+      icon: <SettingsIcon />,
+      children: [
+        { title: 'General', path: '/settings' },
+        { title: 'Languages', path: '/languages' },
+        { title: 'Currencies', path: '/settings/currencies' },
+        { title: 'Countries', path: '/settings/countries' },
+      ],
+    },
     { title: 'Moderation', path: '/moderation/words', icon: <ShieldIcon /> },
     { title: 'API Logs', path: '/api/logs', icon: <ApiIcon /> },
   ];
@@ -105,8 +131,10 @@ const Sidebar = () => {
       <List sx={{ pt: 2, px: 1 }}>
         {menuItems.map((item, index) => {
           if (item.children) {
-            const isOpen = item.title === 'Plans' ? plansOpen : contentOpen;
-            const setOpen = item.title === 'Plans' ? setPlansOpen : setContentOpen;
+            const isOpen = item.title === 'Plans' ? plansOpen :
+                          item.title === 'Content' ? contentOpen : settingsOpen;
+            const setOpen = item.title === 'Plans' ? setPlansOpen :
+                           item.title === 'Content' ? setContentOpen : setSettingsOpen;
             
             return (
               <Box key={index}>

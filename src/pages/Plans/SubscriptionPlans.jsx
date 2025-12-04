@@ -10,9 +10,15 @@ import {
   TextField,
   Switch,
   FormControlLabel,
-  Grid
+  Grid,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Chip,
+  IconButton
 } from '@mui/material';
-import { Add as AddIcon } from '@mui/icons-material';
+import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import DataTable from '../../components/Common/DataTable';
 import StatusBadge from '../../components/Common/StatusBadge';
@@ -27,12 +33,20 @@ const SubscriptionPlans = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [bulletInput, setBulletInput] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
+    subheading: '',
     description: '',
+    description_bullets: [],
     price: 0,
+    renewal_price: null,
     duration_days: 30,
+    color_hex: '#4CAF50',
+    tag: null,
+    stripe_product_id: '',
+    stripe_price_id: '',
     is_active: true,
     sort_order: 0,
     features: {
@@ -55,13 +69,8 @@ const SubscriptionPlans = () => {
   const fetchPlans = async () => {
     try {
       setLoading(true);
-      console.log('Fetching subscription plans...');
       const response = await adminService.getSubscriptionPlans();
-      console.log('Response:', response);
       setPlans(response.data.data || []);
-      if (!response.data.data || response.data.data.length === 0) {
-        console.log('No subscription plans found');
-      }
     } catch (error) {
       console.error('Failed to fetch subscription plans:', error);
       toast.error(error.response?.data?.message || 'Failed to fetch subscription plans');
@@ -76,9 +85,16 @@ const SubscriptionPlans = () => {
     setFormData({
       name: '',
       slug: '',
+      subheading: '',
       description: '',
+      description_bullets: [],
       price: 0,
+      renewal_price: null,
       duration_days: 30,
+      color_hex: '#4CAF50',
+      tag: null,
+      stripe_product_id: '',
+      stripe_price_id: '',
       is_active: true,
       sort_order: 0,
       features: {
@@ -93,6 +109,7 @@ const SubscriptionPlans = () => {
         bulk_upload: false
       }
     });
+    setBulletInput('');
     setDialogOpen(true);
   };
 
@@ -100,16 +117,28 @@ const SubscriptionPlans = () => {
     setIsEditing(true);
     setSelectedPlan(plan);
     const features = typeof plan.features === 'string' ? JSON.parse(plan.features) : plan.features;
+    const bullets = plan.description_bullets ? 
+      (typeof plan.description_bullets === 'string' ? JSON.parse(plan.description_bullets) : plan.description_bullets) 
+      : [];
+    
     setFormData({
       name: plan.name,
       slug: plan.slug,
+      subheading: plan.subheading || '',
       description: plan.description || '',
+      description_bullets: bullets,
       price: plan.price,
+      renewal_price: plan.renewal_price,
       duration_days: plan.duration_days,
+      color_hex: plan.color_hex || '#4CAF50',
+      tag: plan.tag || null,
+      stripe_product_id: plan.stripe_product_id || '',
+      stripe_price_id: plan.stripe_price_id || '',
       is_active: plan.is_active,
       sort_order: plan.sort_order || 0,
       features
     });
+    setBulletInput('');
     setDialogOpen(true);
   };
 
@@ -147,11 +176,47 @@ const SubscriptionPlans = () => {
     }
   };
 
+  const handleAddBullet = () => {
+    if (bulletInput.trim()) {
+      setFormData({
+        ...formData,
+        description_bullets: [...formData.description_bullets, bulletInput.trim()]
+      });
+      setBulletInput('');
+    }
+  };
+
+  const handleRemoveBullet = (index) => {
+    setFormData({
+      ...formData,
+      description_bullets: formData.description_bullets.filter((_, i) => i !== index)
+    });
+  };
+
   const columns = [
     {
       id: 'name',
       label: 'Plan Name',
-      minWidth: 120
+      minWidth: 120,
+      format: (value, row) => (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ 
+            width: 12, 
+            height: 12, 
+            borderRadius: '50%', 
+            backgroundColor: row.color_hex || '#4CAF50' 
+          }} />
+          {value}
+          {row.tag && (
+            <Chip 
+              label={row.tag.toUpperCase()} 
+              size="small" 
+              color={row.tag === 'best' ? 'success' : 'primary'}
+              sx={{ height: 20, fontSize: '0.7rem' }}
+            />
+          )}
+        </Box>
+      )
     },
     {
       id: 'slug',
@@ -159,10 +224,21 @@ const SubscriptionPlans = () => {
       minWidth: 100
     },
     {
+      id: 'subheading',
+      label: 'Subheading',
+      minWidth: 150
+    },
+    {
       id: 'price',
       label: 'Price',
       minWidth: 100,
       format: (value) => `₹${value}`
+    },
+    {
+      id: 'renewal_price',
+      label: 'Renewal',
+      minWidth: 100,
+      format: (value) => value ? `₹${value}` : 'Same'
     },
     {
       id: 'duration_days',
@@ -223,12 +299,14 @@ const SubscriptionPlans = () => {
       )}
 
       {/* Add/Edit Dialog */}
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="lg" fullWidth>
         <DialogTitle>{isEditing ? 'Edit Plan' : 'Add New Plan'}</DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+            {/* Basic Info */}
+            <Typography variant="h6">Basic Information</Typography>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   label="Plan Name"
                   value={formData.name}
@@ -237,13 +315,23 @@ const SubscriptionPlans = () => {
                   required
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   label="Slug"
                   value={formData.slug}
-                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase() })}
                   fullWidth
                   required
+                  helperText="Lowercase, no spaces (e.g., gold, violet)"
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Subheading"
+                  value={formData.subheading}
+                  onChange={(e) => setFormData({ ...formData, subheading: e.target.value })}
+                  fullWidth
+                  placeholder="e.g., Most popular choice"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -254,19 +342,61 @@ const SubscriptionPlans = () => {
                   fullWidth
                   multiline
                   rows={2}
+                  placeholder="Brief description of the plan"
                 />
               </Grid>
-              <Grid item xs={12} md={4}>
+            </Grid>
+
+            {/* Description Bullets */}
+            <Typography variant="h6" sx={{ mt: 2 }}>Feature Bullets (for UI)</Typography>
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <TextField
+                label="Add Feature"
+                value={bulletInput}
+                onChange={(e) => setBulletInput(e.target.value)}
+                fullWidth
+                onKeyPress={(e) => e.key === 'Enter' && handleAddBullet()}
+                placeholder="e.g., 10 active advertisements"
+              />
+              <Button onClick={handleAddBullet} variant="outlined">Add</Button>
+            </Box>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              {formData.description_bullets.map((bullet, index) => (
+                <Chip
+                  key={index}
+                  label={bullet}
+                  onDelete={() => handleRemoveBullet(index)}
+                  color="primary"
+                  variant="outlined"
+                />
+              ))}
+            </Box>
+
+            {/* Pricing */}
+            <Typography variant="h6" sx={{ mt: 2 }}>Pricing</Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={3}>
                 <TextField
-                  label="Price (₹)"
+                  label="Initial Price (₹)"
                   type="number"
                   value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
+                  onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
                   fullWidth
                   required
                 />
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={3}>
+                <TextField
+                  label="Renewal Price (₹)"
+                  type="number"
+                  value={formData.renewal_price || ''}
+                  onChange={(e) => setFormData({ ...formData, renewal_price: e.target.value ? parseFloat(e.target.value) : null })}
+                  fullWidth
+                  placeholder="Leave empty if same"
+                  helperText="Price after first period"
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
                 <TextField
                   label="Duration (days)"
                   type="number"
@@ -276,7 +406,7 @@ const SubscriptionPlans = () => {
                   required
                 />
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={3}>
                 <TextField
                   label="Sort Order"
                   type="number"
@@ -287,8 +417,75 @@ const SubscriptionPlans = () => {
               </Grid>
             </Grid>
 
+            {/* Appearance */}
+            <Typography variant="h6" sx={{ mt: 2 }}>Appearance</Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Color (Hex)"
+                  value={formData.color_hex}
+                  onChange={(e) => setFormData({ ...formData, color_hex: e.target.value })}
+                  fullWidth
+                  placeholder="#4CAF50"
+                  InputProps={{
+                    startAdornment: (
+                      <Box sx={{ 
+                        width: 24, 
+                        height: 24, 
+                        backgroundColor: formData.color_hex || '#4CAF50',
+                        borderRadius: 1,
+                        mr: 1,
+                        border: '1px solid #ccc'
+                      }} />
+                    )
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
+                  <InputLabel>Tag</InputLabel>
+                  <Select
+                    value={formData.tag || ''}
+                    label="Tag"
+                    onChange={(e) => setFormData({ ...formData, tag: e.target.value || null })}
+                  >
+                    <MenuItem value="">None</MenuItem>
+                    <MenuItem value="best">Best</MenuItem>
+                    <MenuItem value="popular">Popular</MenuItem>
+                    <MenuItem value="recommended">Recommended</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
+
+            {/* Stripe Integration */}
+            <Typography variant="h6" sx={{ mt: 2 }}>Stripe Integration</Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Stripe Product ID"
+                  value={formData.stripe_product_id}
+                  onChange={(e) => setFormData({ ...formData, stripe_product_id: e.target.value })}
+                  fullWidth
+                  placeholder="prod_xxxxx"
+                  helperText="From Stripe dashboard"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Stripe Price ID"
+                  value={formData.stripe_price_id}
+                  onChange={(e) => setFormData({ ...formData, stripe_price_id: e.target.value })}
+                  fullWidth
+                  placeholder="price_xxxxx"
+                  helperText="Default currency price ID"
+                />
+              </Grid>
+            </Grid>
+
+            {/* Features */}
             <Typography variant="h6" sx={{ mt: 2 }}>
-              Features
+              Plan Features
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} md={4}>
@@ -327,7 +524,25 @@ const SubscriptionPlans = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={4}>
+                <FormControl fullWidth>
+                  <InputLabel>Support Priority</InputLabel>
+                  <Select
+                    value={formData.features.support_priority}
+                    label="Support Priority"
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      features: { ...formData.features, support_priority: e.target.value }
+                    })}
+                  >
+                    <MenuItem value="low">Low</MenuItem>
+                    <MenuItem value="standard">Standard</MenuItem>
+                    <MenuItem value="high">High</MenuItem>
+                    <MenuItem value="highest">Highest</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={4}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -341,7 +556,7 @@ const SubscriptionPlans = () => {
                   label="Chat Enabled"
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={4}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -355,7 +570,7 @@ const SubscriptionPlans = () => {
                   label="Analytics"
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={4}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -369,7 +584,35 @@ const SubscriptionPlans = () => {
                   label="Verification Badge"
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={4}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={formData.features.api_access}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        features: { ...formData.features, api_access: e.target.checked }
+                      })}
+                    />
+                  }
+                  label="API Access"
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={formData.features.bulk_upload}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        features: { ...formData.features, bulk_upload: e.target.checked }
+                      })}
+                    />
+                  }
+                  label="Bulk Upload"
+                />
+              </Grid>
+              <Grid item xs={12} md={12}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -377,7 +620,7 @@ const SubscriptionPlans = () => {
                       onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
                     />
                   }
-                  label="Active"
+                  label="Plan Active"
                 />
               </Grid>
             </Grid>
