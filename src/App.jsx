@@ -8,6 +8,7 @@ import theme from './styles/theme';
 import { AuthProvider } from './context/AuthContext';
 import AdminLayout from './components/Layout/AdminLayout';
 import Login from './pages/Auth/Login';
+import Debug from './pages/Auth/Debug';
 import Dashboard from './pages/Dashboard/Dashboard';
 import UserList from './pages/Users/UserList';
 import SubscriptionPlans from './pages/Plans/SubscriptionPlans';
@@ -34,11 +35,22 @@ import APILogs from './pages/API/APILogs';
 // Protected Route Wrapper
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('accessToken');
-  
+
   if (!token) {
     return <Navigate to="/login" replace />;
   }
-  
+
+  return children;
+};
+
+// Public Route Wrapper (for login page)
+const PublicRoute = ({ children }) => {
+  const token = localStorage.getItem('accessToken');
+
+  if (token) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   return children;
 };
 
@@ -50,7 +62,17 @@ function App() {
         <Router>
           <Routes>
             {/* Public Routes */}
-            <Route path="/login" element={<Login />} />
+            <Route
+              path="/login"
+              element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              }
+            />
+
+            {/* Debug page - accessible without auth */}
+            <Route path="/debug" element={<Debug />} />
 
             {/* Protected Routes with Layout */}
             <Route
@@ -64,15 +86,15 @@ function App() {
               {/* Dashboard */}
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
-              
+
               {/* User Management */}
               <Route path="users" element={<UserList />} />
-              
+
               {/* Plans Management */}
               <Route path="plans/subscriptions" element={<SubscriptionPlans />} />
               <Route path="plans/advertisements" element={<AdvertisementPlans />} />
               <Route path="plans/banners" element={<BannerPlans />} />
-              
+
               {/* Content Management */}
               <Route path="content/advertisements" element={<Advertisements />} />
               <Route path="content/banners" element={<Banners />} />
@@ -84,19 +106,19 @@ function App() {
               <Route path="content/ad-genders" element={<AdGenders />} />
               <Route path="content/ad-sizes" element={<AdSizes />} />
               <Route path="content/ad-colors" element={<AdColors />} />
-              
+
               {/* Subscriptions */}
               <Route path="subscriptions" element={<SubscriptionList />} />
-              
+
               {/* Settings */}
               <Route path="settings" element={<GeneralSettings />} />
               <Route path="settings/currencies" element={<CurrencyList />} />
               <Route path="settings/countries" element={<CountryList />} />
               <Route path="languages" element={<LanguageList />} />
-              
+
               {/* Moderation */}
               <Route path="moderation/words" element={<ModerationWords />} />
-              
+
               {/* API Manager */}
               <Route path="api/logs" element={<APILogs />} />
             </Route>
