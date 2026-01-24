@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
     // Check if user is logged in
     const token = localStorage.getItem('accessToken');
     const storedUser = localStorage.getItem('user');
-    
+
     if (token && storedUser) {
       setUser(JSON.parse(storedUser));
     }
@@ -21,12 +21,12 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const response = await api.post('/auth/login', { email, password });
-      const { user, accessToken } = response.data.data;
-      
-      localStorage.setItem('accessToken', accessToken);
+      const { user, access_token } = response.data.data;
+
+      localStorage.setItem('accessToken', access_token);
       localStorage.setItem('user', JSON.stringify(user));
       setUser(user);
-      
+
       return { success: true };
     } catch (error) {
       return {

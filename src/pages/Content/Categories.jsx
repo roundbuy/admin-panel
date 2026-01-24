@@ -35,6 +35,7 @@ const Categories = () => {
     parent_id: '',
     icon: '',
     description: '',
+    requires_size: 'not_applicable',
     is_active: true,
     sort_order: 0
   });
@@ -64,6 +65,7 @@ const Categories = () => {
       parent_id: '',
       icon: '',
       description: '',
+      requires_size: 'not_applicable',
       is_active: true,
       sort_order: 0
     });
@@ -78,6 +80,7 @@ const Categories = () => {
       parent_id: category.parent_id || '',
       icon: category.icon || '',
       description: category.description || '',
+      requires_size: category.requires_size || 'not_applicable',
       is_active: category.is_active,
       sort_order: category.sort_order || 0
     });
@@ -130,9 +133,9 @@ const Categories = () => {
   const columns = [
     { id: 'name', label: 'Name', minWidth: 200 },
     { id: 'slug', label: 'Slug', minWidth: 150 },
-    { 
-      id: 'parent_id', 
-      label: 'Parent', 
+    {
+      id: 'parent_id',
+      label: 'Parent',
       minWidth: 150,
       format: (value) => {
         if (!value) return 'Root';
@@ -141,21 +144,21 @@ const Categories = () => {
       }
     },
     { id: 'sort_order', label: 'Sort Order', minWidth: 100 },
-    { 
-      id: 'is_active', 
-      label: 'Status', 
+    {
+      id: 'is_active',
+      label: 'Status',
       minWidth: 100,
       format: (value) => (
-        <Chip 
-          label={value ? 'Active' : 'Inactive'} 
-          color={value ? 'success' : 'default'} 
-          size="small" 
+        <Chip
+          label={value ? 'Active' : 'Inactive'}
+          color={value ? 'success' : 'default'}
+          size="small"
         />
       )
     },
-    { 
-      id: 'created_at', 
-      label: 'Created', 
+    {
+      id: 'created_at',
+      label: 'Created',
       minWidth: 120,
       format: (value) => new Date(value).toLocaleDateString()
     }
@@ -186,8 +189,8 @@ const Categories = () => {
           totalRows={categories.length}
           page={0}
           rowsPerPage={categories.length}
-          onPageChange={() => {}}
-          onRowsPerPageChange={() => {}}
+          onPageChange={() => { }}
+          onRowsPerPageChange={() => { }}
           onEdit={handleEdit}
           onDelete={handleDelete}
           loading={loading}
@@ -270,7 +273,21 @@ const Categories = () => {
                   rows={3}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  select
+                  label="Size Requirement"
+                  value={formData.requires_size}
+                  onChange={(e) => setFormData({ ...formData, requires_size: e.target.value })}
+                  helperText="Controls if size selection is required for this category"
+                >
+                  <MenuItem value="required">Required (Fashion/Clothing)</MenuItem>
+                  <MenuItem value="optional">Optional (Sports/Hunting)</MenuItem>
+                  <MenuItem value="not_applicable">Not Applicable</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid item xs={12} md={6}>
                 <FormControlLabel
                   control={
                     <Switch

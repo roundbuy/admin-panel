@@ -4,11 +4,11 @@ import { Outlet } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Sidebar from './Sidebar';
 import LogoutIcon from '@mui/icons-material/Logout';
-
-const DRAWER_WIDTH = 240;
+import { useSidebar } from '../../context/SidebarContext';
 
 const AdminLayout = () => {
   const { user, logout } = useAuth();
+  const { currentWidth } = useSidebar();
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -22,7 +22,8 @@ const AdminLayout = () => {
           flexGrow: 1,
           backgroundColor: '#f5f5f5',
           minHeight: '100vh',
-          width: `calc(100% - ${DRAWER_WIDTH}px)`,
+          width: `calc(100% - ${currentWidth}px)`,
+          transition: 'width 0.3s ease',
         }}
       >
         {/* Top Bar */}
@@ -39,7 +40,7 @@ const AdminLayout = () => {
             <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 500 }}>
               {/* Page title will be set by each page */}
             </Typography>
-            
+
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Typography variant="body2" sx={{ color: '#666' }}>
                 {user?.full_name || user?.email}

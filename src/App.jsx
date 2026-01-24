@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './styles/theme';
 import { AuthProvider } from './context/AuthContext';
+import { SidebarProvider } from './context/SidebarContext';
 import AdminLayout from './components/Layout/AdminLayout';
 import Login from './pages/Auth/Login';
 import Debug from './pages/Auth/Debug';
@@ -26,11 +27,32 @@ import AdColors from './pages/Content/AdColors';
 import DemoAdvertisements from './pages/Content/DemoAdvertisements';
 import SubscriptionList from './pages/Subscriptions/SubscriptionList';
 import LanguageList from './pages/Languages/LanguageList';
+import TranslationManager from './pages/Languages/TranslationManager';
 import GeneralSettings from './pages/Settings/GeneralSettings';
 import CurrencyList from './pages/Settings/CurrencyList';
 import CountryList from './pages/Settings/CountryList';
 import ModerationWords from './pages/Moderation/ModerationWords';
 import APILogs from './pages/API/APILogs';
+
+// Resolution & Support
+import IssuesManagement from './pages/Resolution/IssuesManagement';
+import IssueDetail from './pages/Resolution/IssueDetail';
+import DisputesManagement from './pages/Resolution/DisputesManagement';
+
+// Notifications
+import NotificationList from './pages/Notifications/NotificationList';
+import NotificationForm from './pages/Notifications/NotificationForm';
+import NotificationStats from './pages/Notifications/NotificationStats';
+
+// FAQ Management
+import FAQManagement from './pages/FAQManagement';
+
+// Messages
+import Messages from './pages/Messages/Messages';
+
+// Wallets
+import WalletReports from './pages/Wallets/WalletReports';
+import WithdrawalRequests from './pages/Wallets/WithdrawalRequests';
 
 // Protected Route Wrapper
 const ProtectedRoute = ({ children }) => {
@@ -79,7 +101,9 @@ function App() {
               path="/"
               element={
                 <ProtectedRoute>
-                  <AdminLayout />
+                  <SidebarProvider>
+                    <AdminLayout />
+                  </SidebarProvider>
                 </ProtectedRoute>
               }
             >
@@ -115,12 +139,34 @@ function App() {
               <Route path="settings/currencies" element={<CurrencyList />} />
               <Route path="settings/countries" element={<CountryList />} />
               <Route path="languages" element={<LanguageList />} />
+              <Route path="languages/translations" element={<TranslationManager />} />
 
               {/* Moderation */}
               <Route path="moderation/words" element={<ModerationWords />} />
 
               {/* API Manager */}
               <Route path="api/logs" element={<APILogs />} />
+
+              {/* Resolution & Support */}
+              <Route path="resolution/issues" element={<IssuesManagement />} />
+              <Route path="resolution/issues/:id" element={<IssueDetail />} />
+              <Route path="resolution/disputes" element={<DisputesManagement />} />
+
+              {/* Notifications */}
+              <Route path="notifications" element={<NotificationList />} />
+              <Route path="notifications/create" element={<NotificationForm />} />
+              <Route path="notifications/:id/edit" element={<NotificationForm />} />
+              <Route path="notifications/:id/stats" element={<NotificationStats />} />
+
+              {/* Messages */}
+              <Route path="messages" element={<Messages />} />
+
+              {/* FAQ Management */}
+              <Route path="faqs" element={<FAQManagement />} />
+
+              {/* Wallets */}
+              <Route path="wallets/reports" element={<WalletReports />} />
+              <Route path="wallets/withdrawals" element={<WithdrawalRequests />} />
             </Route>
 
             {/* Catch all - redirect to dashboard */}

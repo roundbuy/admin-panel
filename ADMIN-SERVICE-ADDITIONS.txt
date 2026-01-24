@@ -1,0 +1,24 @@
+  // ==================== RESOLUTION & SUPPORT ====================
+  
+  // Issues Management
+  getIssues: (params) => api.get('/admin/resolution/issues', { params }),
+  getIssueDetail: (id) => api.get(`/admin/resolution/issues/${id}`),
+  getIssueStats: () => api.get('/admin/resolution/issues/stats'),
+  extendIssueDeadline: (id, days) => api.put(`/admin/resolution/issues/${id}/extend-deadline`, { days }),
+  forceAcceptIssue: (id, reason) => api.put(`/admin/resolution/issues/${id}/force-accept`, { reason }),
+  forceRejectIssue: (id, reason) => api.put(`/admin/resolution/issues/${id}/force-reject`, { reason }),
+  closeIssue: (id, reason) => api.put(`/admin/resolution/issues/${id}/close`, { reason }),
+  addIssueNote: (id, note) => api.post(`/admin/resolution/issues/${id}/note`, { note }),
+
+  // Disputes Management
+  getDisputes: (params) => api.get('/admin/resolution/disputes', { params }),
+  getDisputeDetail: (id) => api.get(`/admin/resolution/disputes/${id}`),
+  getDisputeStats: () => api.get('/admin/resolution/disputes/stats'),
+  assignDispute: (id, staff_id) => api.put(`/admin/resolution/disputes/${id}/assign`, { staff_id }),
+  updateDisputePriority: (id, priority) => api.put(`/admin/resolution/disputes/${id}/priority`, { priority }),
+  extendDisputeDeadline: (id, days, deadline_type) => 
+    api.put(`/admin/resolution/disputes/${id}/extend-deadline`, { days, deadline_type }),
+  resolveDispute: (id, resolution, winner) => 
+    api.post(`/admin/resolution/disputes/${id}/resolve`, { resolution, winner }),
+  closeDispute: (id, reason) => api.put(`/admin/resolution/disputes/${id}/close`, { reason }),
+  addDisputeNote: (id, note) => api.post(`/admin/resolution/disputes/${id}/note`, { note }),

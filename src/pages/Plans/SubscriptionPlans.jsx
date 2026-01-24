@@ -16,9 +16,17 @@ import {
   FormControl,
   InputLabel,
   Chip,
-  IconButton
+  IconButton,
+  Tooltip
 } from '@mui/material';
-import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import {
+  Add as AddIcon,
+  Delete as DeleteIcon,
+  CheckCircle as CheckCircleIcon,
+  Error as ErrorIcon,
+  Sync as SyncIcon,
+  ContentCopy as CopyIcon
+} from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import DataTable from '../../components/Common/DataTable';
 import StatusBadge from '../../components/Common/StatusBadge';
@@ -53,6 +61,7 @@ const SubscriptionPlans = () => {
       max_ads: 0,
       max_banners: 0,
       featured_ads: 0,
+      total_locations: 0,
       support_priority: 'standard',
       chat_enabled: true,
       analytics: false,
@@ -101,6 +110,7 @@ const SubscriptionPlans = () => {
         max_ads: 0,
         max_banners: 0,
         featured_ads: 0,
+        total_locations: 0,
         support_priority: 'standard',
         chat_enabled: true,
         analytics: false,
@@ -117,10 +127,10 @@ const SubscriptionPlans = () => {
     setIsEditing(true);
     setSelectedPlan(plan);
     const features = typeof plan.features === 'string' ? JSON.parse(plan.features) : plan.features;
-    const bullets = plan.description_bullets ? 
-      (typeof plan.description_bullets === 'string' ? JSON.parse(plan.description_bullets) : plan.description_bullets) 
+    const bullets = plan.description_bullets ?
+      (typeof plan.description_bullets === 'string' ? JSON.parse(plan.description_bullets) : plan.description_bullets)
       : [];
-    
+
     setFormData({
       name: plan.name,
       slug: plan.slug,
@@ -140,6 +150,35 @@ const SubscriptionPlans = () => {
     });
     setBulletInput('');
     setDialogOpen(true);
+  };
+
+  const handleDuplicate = (plan) => {
+    setIsEditing(false);
+    const features = typeof plan.features === 'string' ? JSON.parse(plan.features) : plan.features;
+    const bullets = plan.description_bullets ?
+      (typeof plan.description_bullets === 'string' ? JSON.parse(plan.description_bullets) : plan.description_bullets)
+      : [];
+
+    setFormData({
+      name: `${plan.name} (Copy)`,
+      slug: `${plan.slug}-copy`,
+      subheading: plan.subheading || '',
+      description: plan.description || '',
+      description_bullets: bullets,
+      price: plan.price,
+      renewal_price: plan.renewal_price,
+      duration_days: plan.duration_days,
+      color_hex: plan.color_hex || '#4CAF50',
+      tag: plan.tag || null,
+      stripe_product_id: '',
+      stripe_price_id: '',
+      is_active: false,
+      sort_order: (plan.sort_order || 0) + 1,
+      features
+    });
+    setBulletInput('');
+    setDialogOpen(true);
+    toast.info('Plan duplicated. Update the name and slug before saving.');
   };
 
   const handleSave = async () => {
@@ -193,6 +232,45 @@ const SubscriptionPlans = () => {
     });
   };
 
+  const renderStripeStatus = (plan) => {
+    const hasSyncedProduct = plan.stripe_product_id;
+    const hasSyncedPrice = plan.stripe_price_id;
+
+    if (hasSyncedProduct && hasSyncedPrice) {
+      return (
+        <Tooltip title={`Product: ${plan.stripe_product_id}\nPrice: ${plan.stripe_price_id}`}>
+          <Chip
+            icon={<CheckCircleIcon />}
+            label="Synced"
+            color="success"
+            size="small"
+            sx={{ cursor: 'pointer' }}
+          />
+        </Tooltip>
+      );
+    } else if (hasSyncedProduct) {
+      return (
+        <Tooltip title="Product synced but missing price">
+          <Chip
+            icon={<ErrorIcon />}
+            label="Partial"
+            color="warning"
+            size="small"
+          />
+        </Tooltip>
+      );
+    } else {
+      return (
+        <Chip
+          icon={<ErrorIcon />}
+          label="Not Synced"
+          color="error"
+          size="small"
+        />
+      );
+    }
+  };
+
   const columns = [
     {
       id: 'name',
@@ -200,17 +278,17 @@ const SubscriptionPlans = () => {
       minWidth: 120,
       format: (value, row) => (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Box sx={{ 
-            width: 12, 
-            height: 12, 
-            borderRadius: '50%', 
-            backgroundColor: row.color_hex || '#4CAF50' 
+          <Box sx={{
+            width: 12,
+            height: 12,
+            borderRadius: '50%',
+            backgroundColor: row.color_hex || '#4CAF50'
           }} />
           {value}
           {row.tag && (
-            <Chip 
-              label={row.tag.toUpperCase()} 
-              size="small" 
+            <Chip
+              label={row.tag.toUpperCase()}
+              size="small"
               color={row.tag === 'best' ? 'success' : 'primary'}
               sx={{ height: 20, fontSize: '0.7rem' }}
             />
@@ -256,6 +334,12 @@ const SubscriptionPlans = () => {
       }
     },
     {
+      id: 'stripe_product_id',
+      label: 'Stripe Status',
+      minWidth: 120,
+      format: (value, row) => renderStripeStatus(row)
+    },
+    {
       id: 'is_active',
       label: 'Status',
       minWidth: 100,
@@ -273,9 +357,14 @@ const SubscriptionPlans = () => {
   return (
     <Box sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-          Subscription Plans
-        </Typography>
+        <Box>
+          <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+            Subscription Plans
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+            Manage subscription plans with Stripe integration
+          </Typography>
+        </Box>
         <Button variant="contained" startIcon={<AddIcon />} onClick={handleAdd}>
           Add Plan
         </Button>
@@ -290,11 +379,19 @@ const SubscriptionPlans = () => {
           totalRows={plans.length}
           page={0}
           rowsPerPage={plans.length}
-          onPageChange={() => {}}
-          onRowsPerPageChange={() => {}}
+          onPageChange={() => { }}
+          onRowsPerPageChange={() => { }}
           onEdit={handleEdit}
           onDelete={handleDelete}
           loading={loading}
+          customActions={[
+            {
+              label: 'Duplicate',
+              icon: <CopyIcon fontSize="small" />,
+              color: 'primary',
+              onClick: handleDuplicate
+            }
+          ]}
         />
       )}
 
@@ -429,9 +526,9 @@ const SubscriptionPlans = () => {
                   placeholder="#4CAF50"
                   InputProps={{
                     startAdornment: (
-                      <Box sx={{ 
-                        width: 24, 
-                        height: 24, 
+                      <Box sx={{
+                        width: 24,
+                        height: 24,
                         backgroundColor: formData.color_hex || '#4CAF50',
                         borderRadius: 1,
                         mr: 1,
@@ -459,7 +556,13 @@ const SubscriptionPlans = () => {
             </Grid>
 
             {/* Stripe Integration */}
-            <Typography variant="h6" sx={{ mt: 2 }}>Stripe Integration</Typography>
+            <Typography variant="h6" sx={{ mt: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+              <SyncIcon fontSize="small" />
+              Stripe Integration
+            </Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: 'block' }}>
+              Stripe IDs will be automatically generated when you save the plan
+            </Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
                 <TextField
@@ -468,7 +571,15 @@ const SubscriptionPlans = () => {
                   onChange={(e) => setFormData({ ...formData, stripe_product_id: e.target.value })}
                   fullWidth
                   placeholder="prod_xxxxx"
-                  helperText="From Stripe dashboard"
+                  helperText="Auto-generated or from Stripe dashboard"
+                  disabled={!isEditing}
+                  InputProps={{
+                    startAdornment: formData.stripe_product_id && (
+                      <Tooltip title="Synced with Stripe">
+                        <CheckCircleIcon color="success" sx={{ mr: 1 }} />
+                      </Tooltip>
+                    )
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -479,6 +590,14 @@ const SubscriptionPlans = () => {
                   fullWidth
                   placeholder="price_xxxxx"
                   helperText="Default currency price ID"
+                  disabled={!isEditing}
+                  InputProps={{
+                    startAdornment: formData.stripe_price_id && (
+                      <Tooltip title="Synced with Stripe">
+                        <CheckCircleIcon color="success" sx={{ mr: 1 }} />
+                      </Tooltip>
+                    )
+                  }}
                 />
               </Grid>
             </Grid>
@@ -522,6 +641,19 @@ const SubscriptionPlans = () => {
                     features: { ...formData.features, featured_ads: parseInt(e.target.value) }
                   })}
                   fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Total Locations (-1 for unlimited)"
+                  type="number"
+                  value={formData.features.total_locations}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    features: { ...formData.features, total_locations: parseInt(e.target.value) }
+                  })}
+                  fullWidth
+                  helperText="Max locations user can add"
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -628,8 +760,8 @@ const SubscriptionPlans = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleSave} variant="contained">
-            {isEditing ? 'Update' : 'Create'}
+          <Button onClick={handleSave} variant="contained" startIcon={<SyncIcon />}>
+            {isEditing ? 'Update & Sync' : 'Create & Sync'}
           </Button>
         </DialogActions>
       </Dialog>

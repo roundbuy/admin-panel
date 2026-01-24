@@ -11,7 +11,8 @@ import {
   Switch,
   FormControlLabel,
   Chip,
-  Grid
+  Grid,
+  MenuItem
 } from '@mui/material';
 import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { toast } from 'react-toastify';
@@ -22,6 +23,7 @@ import adminService from '../../services/admin.service';
 
 const AdSizes = () => {
   const [sizes, setSizes] = useState([]);
+  const [genders, setGenders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingSize, setEditingSize] = useState(null);
@@ -30,12 +32,14 @@ const AdSizes = () => {
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
+    gender_id: '',
     is_active: true,
     sort_order: 0
   });
 
   useEffect(() => {
     fetchSizes();
+    fetchGenders();
   }, []);
 
   const fetchSizes = async () => {
@@ -51,11 +55,21 @@ const AdSizes = () => {
     }
   };
 
+  const fetchGenders = async () => {
+    try {
+      const response = await adminService.getAdGenders();
+      setGenders(response.data.data);
+    } catch (error) {
+      console.error('Fetch genders error:', error);
+    }
+  };
+
   const handleAdd = () => {
     setEditingSize(null);
     setFormData({
       name: '',
       slug: '',
+      gender_id: '',
       is_active: true,
       sort_order: 0
     });
@@ -67,6 +81,7 @@ const AdSizes = () => {
     setFormData({
       name: size.name,
       slug: size.slug,
+      gender_id: size.gender_id || '',
       is_active: size.is_active,
       sort_order: size.sort_order || 0
     });
@@ -82,6 +97,7 @@ const AdSizes = () => {
     try {
       const saveData = {
         ...formData,
+        gender_id: formData.gender_id || null,
         sort_order: parseInt(formData.sort_order) || 0
       };
 
@@ -119,22 +135,28 @@ const AdSizes = () => {
   const columns = [
     { id: 'name', label: 'Name', minWidth: 200 },
     { id: 'slug', label: 'Slug', minWidth: 150 },
+    {
+      id: 'gender_name',
+      label: 'Gender',
+      minWidth: 120,
+      format: (value) => value || 'Not Set'
+    },
     { id: 'sort_order', label: 'Sort Order', minWidth: 100 },
-    { 
-      id: 'is_active', 
-      label: 'Status', 
+    {
+      id: 'is_active',
+      label: 'Status',
       minWidth: 100,
       format: (value) => (
-        <Chip 
-          label={value ? 'Active' : 'Inactive'} 
-          color={value ? 'success' : 'default'} 
-          size="small" 
+        <Chip
+          label={value ? 'Active' : 'Inactive'}
+          color={value ? 'success' : 'default'}
+          size="small"
         />
       )
     },
-    { 
-      id: 'created_at', 
-      label: 'Created', 
+    {
+      id: 'created_at',
+      label: 'Created',
       minWidth: 120,
       format: (value) => new Date(value).toLocaleDateString()
     }
@@ -165,8 +187,8 @@ const AdSizes = () => {
           totalRows={sizes.length}
           page={0}
           rowsPerPage={sizes.length}
-          onPageChange={() => {}}
-          onRowsPerPageChange={() => {}}
+          onPageChange={() => { }}
+          onRowsPerPageChange={() => { }}
           onEdit={handleEdit}
           onDelete={handleDelete}
           loading={loading}
@@ -204,6 +226,23 @@ const AdSizes = () => {
                   onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                   required
                 />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  select
+                  label="Gender"
+                  value={formData.gender_id}
+                  onChange={(e) => setFormData({ ...formData, gender_id: e.target.value })}
+                  helperText="Select gender category for this size"
+                >
+                  <MenuItem value="">Not Set</MenuItem>
+                  {genders.map((gender) => (
+                    <MenuItem key={gender.id} value={gender.id}>
+                      {gender.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
               <Grid item xs={12} md={6}>
                 <TextField
