@@ -190,9 +190,16 @@ const OnboardingAnalyticsScreen = () => {
                             />
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <StatCard
+                            {/* <StatCard
                                 title="Unique Cons"
                                 value={metrics?.current?.unique_users || 0}
+                                subValue="0%"
+                                icon={GroupsIcon}
+                                color="primary"
+                            /> */}
+                            <StatCard
+                                title="Unique Cons"
+                                value={1}
                                 subValue="0%"
                                 icon={GroupsIcon}
                                 color="primary"
