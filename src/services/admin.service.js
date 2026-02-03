@@ -10,6 +10,7 @@ const adminService = {
   updateUser: (id, data) => api.put(`/admin/users/${id}`, data),
   toggleUserStatus: (id, is_active) => api.patch(`/admin/users/${id}/status`, { is_active }),
   deleteUser: (id) => api.delete(`/admin/users/${id}`),
+  getSellerMetrics: (params) => api.get('/admin/seller-metrics', { params }),
 
   // ==================== SUBSCRIPTION PLANS ====================
   getSubscriptionPlans: () => api.get('/admin/subscription-plans'),
@@ -34,14 +35,14 @@ const adminService = {
   getAdvertisementDetail: (id) => api.get(`/admin/advertisements/${id}`),
   updateAdvertisement: (id, data) => api.put(`/admin/advertisements/${id}`, data),
   approveAdvertisement: (id) => api.patch(`/admin/advertisements/${id}/approve`),
-  rejectAdvertisement: (id, rejection_reason) => 
+  rejectAdvertisement: (id, rejection_reason) =>
     api.patch(`/admin/advertisements/${id}/reject`, { rejection_reason }),
   deleteAdvertisement: (id) => api.delete(`/admin/advertisements/${id}`),
 
   // ==================== BANNERS ====================
   getBanners: (params) => api.get('/admin/banners', { params }),
   approveBanner: (id) => api.patch(`/admin/banners/${id}/approve`),
-  rejectBanner: (id, rejection_reason) => 
+  rejectBanner: (id, rejection_reason) =>
     api.patch(`/admin/banners/${id}/reject`, { rejection_reason }),
   deleteBanner: (id) => api.delete(`/admin/banners/${id}`),
 
@@ -71,7 +72,7 @@ const adminService = {
   createModerationWord: (data) => api.post('/admin/moderation/words', data),
   updateModerationWord: (id, data) => api.put(`/admin/moderation/words/${id}`, data),
   deleteModerationWord: (id) => api.delete(`/admin/moderation/words/${id}`),
-  
+
   getModerationQueue: (params) => api.get('/admin/moderation/queue', { params }),
   reviewModerationItem: (id, data) => api.patch(`/admin/moderation/queue/${id}/review`, data),
 

@@ -43,6 +43,9 @@ import {
   Chat as ChatIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
+  EmojiEvents as RewardsIcon,
+  Feedback as FeedbackIcon,
+  Timeline as AnalyticsIcon,
 } from '@mui/icons-material';
 import { useSidebar } from '../../context/SidebarContext';
 
@@ -54,6 +57,7 @@ const Sidebar = () => {
   const [contentOpen, setContentOpen] = React.useState(true);
   const [settingsOpen, setSettingsOpen] = React.useState(false);
   const [walletsOpen, setWalletsOpen] = React.useState(false);
+  const [rewardsOpen, setRewardsOpen] = React.useState(false);
 
   // State for popup menu when minimized
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -64,6 +68,8 @@ const Sidebar = () => {
   const menuItems = [
     { title: 'Dashboard', path: '/dashboard', icon: <DashboardIcon /> },
     { title: 'Users', path: '/users', icon: <PeopleIcon /> },
+    { title: 'Seller Metrics', path: '/seller-metrics', icon: <ActivityIcon /> },
+    { title: 'Onboarding Analytics', path: '/analytics/onboarding', icon: <AnalyticsIcon /> },
     {
       title: 'Plans',
       icon: <CardIcon />,
@@ -89,9 +95,20 @@ const Sidebar = () => {
         { title: 'Ad Colors', path: '/content/ad-colors' },
       ],
     },
+    {
+      title: 'Rewards',
+      icon: <RewardsIcon />,
+      children: [
+        { title: 'Overview', path: '/rewards' },
+        { title: 'Referrals', path: '/rewards/referrals' },
+        { title: 'Lottery', path: '/rewards/lottery' },
+      ],
+    },
     { title: 'Subscriptions', path: '/subscriptions', icon: <SubscriptionsIcon /> },
     { title: 'Notifications', path: '/notifications', icon: <NotificationsIcon /> },
+    { title: 'Campaign Notifications', path: '/notifications/campaigns', icon: <CampaignIcon /> },
     { title: 'Messages', path: '/messages', icon: <ChatIcon /> },
+    { title: 'Suggestions', path: '/suggestions', icon: <FeedbackIcon /> },
     {
       title: 'Settings',
       icon: <SettingsIcon />,
@@ -195,10 +212,12 @@ const Sidebar = () => {
           if (item.children) {
             const isOpen = item.title === 'Plans' ? plansOpen :
               item.title === 'Content' ? contentOpen :
-                item.title === 'Wallets' ? walletsOpen : settingsOpen;
+                item.title === 'Wallets' ? walletsOpen :
+                  item.title === 'Rewards' ? rewardsOpen : settingsOpen;
             const setOpen = item.title === 'Plans' ? setPlansOpen :
               item.title === 'Content' ? setContentOpen :
-                item.title === 'Wallets' ? setWalletsOpen : setSettingsOpen;
+                item.title === 'Wallets' ? setWalletsOpen :
+                  item.title === 'Rewards' ? setRewardsOpen : setSettingsOpen;
 
             return (
               <Box key={index}>

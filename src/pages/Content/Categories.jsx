@@ -35,7 +35,7 @@ const Categories = () => {
     parent_id: '',
     icon: '',
     description: '',
-    requires_size: 'not_applicable',
+    size_type: 'none',
     is_active: true,
     sort_order: 0
   });
@@ -65,7 +65,7 @@ const Categories = () => {
       parent_id: '',
       icon: '',
       description: '',
-      requires_size: 'not_applicable',
+      size_type: 'none',
       is_active: true,
       sort_order: 0
     });
@@ -80,7 +80,7 @@ const Categories = () => {
       parent_id: category.parent_id || '',
       icon: category.icon || '',
       description: category.description || '',
-      requires_size: category.requires_size || 'not_applicable',
+      size_type: category.size_type || 'none',
       is_active: category.is_active,
       sort_order: category.sort_order || 0
     });
@@ -273,20 +273,18 @@ const Categories = () => {
                   rows={3}
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label="Size Requirement"
-                  value={formData.requires_size}
-                  onChange={(e) => setFormData({ ...formData, requires_size: e.target.value })}
-                  helperText="Controls if size selection is required for this category"
-                >
-                  <MenuItem value="required">Required (Fashion/Clothing)</MenuItem>
-                  <MenuItem value="optional">Optional (Sports/Hunting)</MenuItem>
-                  <MenuItem value="not_applicable">Not Applicable</MenuItem>
-                </TextField>
-              </Grid>
+              <TextField
+                fullWidth
+                select
+                label="Size Input Type"
+                value={formData.size_type}
+                onChange={(e) => setFormData({ ...formData, size_type: e.target.value })}
+                helperText="Controls how size input is handled"
+              >
+                <MenuItem value="none">Not Applicable</MenuItem>
+                <MenuItem value="dimensions">Dimensions (LxWxH)</MenuItem>
+                <MenuItem value="clothing">Clothing Size (S/M/L)</MenuItem>
+              </TextField>
               <Grid item xs={12} md={6}>
                 <FormControlLabel
                   control={

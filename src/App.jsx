@@ -11,6 +11,8 @@ import AdminLayout from './components/Layout/AdminLayout';
 import Login from './pages/Auth/Login';
 import Debug from './pages/Auth/Debug';
 import Dashboard from './pages/Dashboard/Dashboard';
+import SellerMetricsPage from './pages/SellerMetricsPage';
+import OnboardingAnalyticsScreen from './pages/OnboardingAnalyticsScreen';
 import UserList from './pages/Users/UserList';
 import SubscriptionPlans from './pages/Plans/SubscriptionPlans';
 import AdvertisementPlans from './pages/Plans/AdvertisementPlans';
@@ -39,16 +41,25 @@ import IssuesManagement from './pages/Resolution/IssuesManagement';
 import IssueDetail from './pages/Resolution/IssueDetail';
 import DisputesManagement from './pages/Resolution/DisputesManagement';
 
+// Rewards
+import RewardsPage from './pages/Rewards/RewardsPage';
+import ReferralsPage from './pages/Rewards/ReferralsPage';
+import LotteryPage from './pages/Rewards/LotteryPage';
+
 // Notifications
 import NotificationList from './pages/Notifications/NotificationList';
 import NotificationForm from './pages/Notifications/NotificationForm';
 import NotificationStats from './pages/Notifications/NotificationStats';
+import CampaignNotifications from './pages/Notifications/CampaignNotifications';
+import CampaignNotificationEdit from './pages/Notifications/CampaignNotificationEdit';
+import CampaignNotificationStats from './pages/Notifications/CampaignNotificationStats';
 
 // FAQ Management
 import FAQManagement from './pages/FAQManagement';
 
 // Messages
 import Messages from './pages/Messages/Messages';
+import Suggestions from './pages/Suggestions/Suggestions';
 
 // Wallets
 import WalletReports from './pages/Wallets/WalletReports';
@@ -110,6 +121,8 @@ function App() {
               {/* Dashboard */}
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
+              <Route path="seller-metrics" element={<SellerMetricsPage />} />
+              <Route path="analytics/onboarding" element={<OnboardingAnalyticsScreen />} />
 
               {/* User Management */}
               <Route path="users" element={<UserList />} />
@@ -130,6 +143,11 @@ function App() {
               <Route path="content/ad-genders" element={<AdGenders />} />
               <Route path="content/ad-sizes" element={<AdSizes />} />
               <Route path="content/ad-colors" element={<AdColors />} />
+
+              {/* Rewards */}
+              <Route path="rewards" element={<RewardsPage />} />
+              <Route path="rewards/referrals" element={<ReferralsPage />} />
+              <Route path="rewards/lottery" element={<LotteryPage />} />
 
               {/* Subscriptions */}
               <Route path="subscriptions" element={<SubscriptionList />} />
@@ -158,8 +176,16 @@ function App() {
               <Route path="notifications/:id/edit" element={<NotificationForm />} />
               <Route path="notifications/:id/stats" element={<NotificationStats />} />
 
+              {/* Campaign Notifications */}
+              <Route path="notifications/campaigns" element={<CampaignNotifications />} />
+              <Route path="notifications/campaigns/:id" element={<CampaignNotificationEdit />} />
+              <Route path="notifications/campaigns/:id/stats" element={<CampaignNotificationStats />} />
+
               {/* Messages */}
               <Route path="messages" element={<Messages />} />
+
+              {/* Suggestions */}
+              <Route path="suggestions" element={<Suggestions />} />
 
               {/* FAQ Management */}
               <Route path="faqs" element={<FAQManagement />} />
