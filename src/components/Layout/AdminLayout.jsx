@@ -42,7 +42,7 @@ const AdminLayout = () => {
             </Typography>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Typography variant="body2" sx={{ color: '#666' }}>
+              <Typography variant="body2" sx={{ color: '#505050' }}>
                 {user?.full_name || user?.email}
               </Typography>
               <Avatar sx={{ width: 32, height: 32, bgcolor: '#3f51b5' }}>

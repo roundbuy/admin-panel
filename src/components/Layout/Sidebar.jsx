@@ -100,6 +100,7 @@ const Sidebar = () => {
       icon: <RewardsIcon />,
       children: [
         { title: 'Overview', path: '/rewards' },
+        { title: 'Level Options', path: '/rewards/level-options' },
         { title: 'Referrals', path: '/rewards/referrals' },
         { title: 'Lottery', path: '/rewards/lottery' },
       ],

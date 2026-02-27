@@ -45,6 +45,7 @@ import DisputesManagement from './pages/Resolution/DisputesManagement';
 import RewardsPage from './pages/Rewards/RewardsPage';
 import ReferralsPage from './pages/Rewards/ReferralsPage';
 import LotteryPage from './pages/Rewards/LotteryPage';
+import LevelRewardsPage from './pages/Rewards/LevelRewardsPage';
 
 // Notifications
 import NotificationList from './pages/Notifications/NotificationList';
@@ -148,6 +149,7 @@ function App() {
               <Route path="rewards" element={<RewardsPage />} />
               <Route path="rewards/referrals" element={<ReferralsPage />} />
               <Route path="rewards/lottery" element={<LotteryPage />} />
+              <Route path="rewards/level-options" element={<LevelRewardsPage />} />
 
               {/* Subscriptions */}
               <Route path="subscriptions" element={<SubscriptionList />} />

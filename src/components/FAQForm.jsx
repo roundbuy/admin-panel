@@ -217,7 +217,7 @@ const FAQForm = ({ open, onClose, faq, onSuccess }) => {
 
                     {/* Answer (Rich Text Editor) */}
                     <Box>
-                        <label style={{ fontSize: '12px', color: errors.answer ? '#d32f2f' : '#666', marginBottom: '4px', display: 'block' }}>
+                        <label style={{ fontSize: '12px', color: errors.answer ? '#d32f2f' : '#505050', marginBottom: '4px', display: 'block' }}>
                             Answer *
                         </label>
                         <ReactQuill
