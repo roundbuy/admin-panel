@@ -68,6 +68,7 @@ const GeneralSettings = () => {
           <Tab label="Payment" />
           <Tab label="Notifications" />
           <Tab label="Pickup Fees" />
+          <Tab label="Offer Rules" />
         </Tabs>
       </Paper>
 
@@ -358,6 +359,55 @@ const GeneralSettings = () => {
                   ).toFixed(2)}</strong>
                 </Typography>
               </Alert>
+            </Grid>
+          </Grid>
+        )}
+
+        {tabValue === 5 && (
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom>Offer Price Floor</Typography>
+              <Alert severity="info" sx={{ mb: 2 }}>
+                Set the minimum offer percentage a buyer can make relative to the asking price.
+                Changes take effect immediately for all new offers — no server restart needed.
+              </Alert>
+            </Grid>
+
+            {/* Minimum Offer Percentage */}
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                type="number"
+                label="Minimum Offer Percentage (%)"
+                value={settings.min_offer_percentage ?? '60'}
+                onChange={(e) => setSettings({ ...settings, min_offer_percentage: e.target.value })}
+                helperText={`Buyers cannot offer less than ${settings.min_offer_percentage ?? 60}% of the asking price`}
+                inputProps={{ step: '1', min: '1', max: '100' }}
+              />
+            </Grid>
+
+            {/* Live preview */}
+            <Grid item xs={12} md={6}>
+              <Alert severity="success">
+                <Typography variant="body2" fontWeight="bold">Live Preview — £100 item:</Typography>
+                <Typography variant="caption">
+                  Minimum offer = <strong>£{((parseFloat(settings.min_offer_percentage || 60) / 100) * 100).toFixed(2)}</strong>
+                </Typography>
+              </Alert>
+            </Grid>
+
+            {/* Custom tooltip text */}
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                multiline
+                minRows={2}
+                label="Offer Tooltip Message"
+                value={settings.min_offer_tooltip_text || ''}
+                onChange={(e) => setSettings({ ...settings, min_offer_tooltip_text: e.target.value })}
+                helperText="Shown inline below the offer input when a buyer enters an amount below the minimum"
+                placeholder="Offers lower than 60% of the asking price are not possible, to reflect items true value."
+              />
             </Grid>
           </Grid>
         )}

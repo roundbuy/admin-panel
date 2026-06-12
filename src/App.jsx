@@ -35,6 +35,8 @@ import CurrencyList from './pages/Settings/CurrencyList';
 import CountryList from './pages/Settings/CountryList';
 import ModerationWords from './pages/Moderation/ModerationWords';
 import APILogs from './pages/API/APILogs';
+import KYCManagement from './pages/KYC/KYCManagement';
+import PostageManagement from './pages/Postage/PostageManagement';
 
 // Resolution & Support
 import IssuesManagement from './pages/Resolution/IssuesManagement';
@@ -61,6 +63,8 @@ import FAQManagement from './pages/FAQManagement';
 // Messages
 import Messages from './pages/Messages/Messages';
 import Suggestions from './pages/Suggestions/Suggestions';
+import EventsManagement from './pages/Events/EventsManagement';
+import TrendingManagement from './pages/Trending/TrendingManagement';
 
 // Wallets
 import WalletReports from './pages/Wallets/WalletReports';
@@ -144,6 +148,10 @@ function App() {
               <Route path="content/ad-genders" element={<AdGenders />} />
               <Route path="content/ad-sizes" element={<AdSizes />} />
               <Route path="content/ad-colors" element={<AdColors />} />
+              <Route path="events" element={<EventsManagement />} />
+              <Route path="trending" element={<TrendingManagement />} />
+              <Route path="kyc" element={<KYCManagement />} />
+              <Route path="postage" element={<PostageManagement />} />
 
               {/* Rewards */}
               <Route path="rewards" element={<RewardsPage />} />

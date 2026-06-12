@@ -37,4 +37,5 @@ api.interceptors.response.use(
   }
 );
 
+export const adminApi = api;
 export default api;

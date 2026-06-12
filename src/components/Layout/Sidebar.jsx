@@ -46,6 +46,10 @@ import {
   EmojiEvents as RewardsIcon,
   Feedback as FeedbackIcon,
   Timeline as AnalyticsIcon,
+  Event as EventIcon,
+  Whatshot as TrendingIcon,
+  VerifiedUser as VerifiedUserIcon,
+  LocalShipping as ShippingIcon,
 } from '@mui/icons-material';
 import { useSidebar } from '../../context/SidebarContext';
 
@@ -95,6 +99,10 @@ const Sidebar = () => {
         { title: 'Ad Colors', path: '/content/ad-colors' },
       ],
     },
+    { title: 'Events', path: '/events', icon: <EventIcon /> },
+    { title: 'Trending', path: '/trending', icon: <TrendingIcon /> },
+    { title: 'KYC / KYB', path: '/kyc', icon: <VerifiedUserIcon /> },
+    { title: 'Postage', path: '/postage', icon: <ShippingIcon /> },
     {
       title: 'Rewards',
       icon: <RewardsIcon />,
