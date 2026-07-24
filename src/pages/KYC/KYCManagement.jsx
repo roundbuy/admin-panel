@@ -20,6 +20,12 @@ const KYCManagement = () => {
   const [rejectReason, setRejectReason] = useState('');
   const { enqueueSnackbar } = useSnackbar();
 
+  const getImageUrl = (path) => {
+    if (!path) return '';
+    const baseUrl = import.meta.env.VITE_API_URL.replace('/api/v1', '');
+    return baseUrl + path;
+  };
+
   const fetchSubmissions = async () => {
     setLoading(true);
     try {
@@ -63,6 +69,7 @@ const KYCManagement = () => {
   const statusColors = {
     pending: 'warning',
     approved: 'success',
+    verified: 'success',
     rejected: 'error',
     unverified: 'default'
   };
@@ -80,7 +87,7 @@ const KYCManagement = () => {
           >
             <MenuItem value="all">All</MenuItem>
             <MenuItem value="pending">Pending</MenuItem>
-            <MenuItem value="approved">Approved</MenuItem>
+            <MenuItem value="verified">Verified</MenuItem>
             <MenuItem value="rejected">Rejected</MenuItem>
           </Select>
         </FormControl>
@@ -147,28 +154,28 @@ const KYCManagement = () => {
                 {selectedSub.front_document_url && (
                   <Grid item xs={12} sm={6}>
                     <Typography variant="subtitle2" color="textSecondary" mb={1}>Front Document</Typography>
-                    <Box component="img" src={import.meta.env.VITE_API_URL + selectedSub.front_document_url} width="100%" borderRadius={2} />
+                    <Box component="img" src={getImageUrl(selectedSub.front_document_url)} width="100%" borderRadius={2} />
                   </Grid>
                 )}
                 
                 {selectedSub.back_document_url && (
                   <Grid item xs={12} sm={6}>
                     <Typography variant="subtitle2" color="textSecondary" mb={1}>Back Document</Typography>
-                    <Box component="img" src={import.meta.env.VITE_API_URL + selectedSub.back_document_url} width="100%" borderRadius={2} />
+                    <Box component="img" src={getImageUrl(selectedSub.back_document_url)} width="100%" borderRadius={2} />
                   </Grid>
                 )}
 
                 {selectedSub.selfie_url && (
                   <Grid item xs={12} sm={6}>
                     <Typography variant="subtitle2" color="textSecondary" mb={1}>Selfie</Typography>
-                    <Box component="img" src={import.meta.env.VITE_API_URL + selectedSub.selfie_url} width="100%" borderRadius={2} />
+                    <Box component="img" src={getImageUrl(selectedSub.selfie_url)} width="100%" borderRadius={2} />
                   </Grid>
                 )}
 
                 {selectedSub.business_reg_url && (
                   <Grid item xs={12} sm={6}>
                     <Typography variant="subtitle2" color="textSecondary" mb={1}>Business Registration Doc</Typography>
-                    <Box component="img" src={import.meta.env.VITE_API_URL + selectedSub.business_reg_url} width="100%" borderRadius={2} />
+                    <Box component="img" src={getImageUrl(selectedSub.business_reg_url)} width="100%" borderRadius={2} />
                   </Grid>
                 )}
 
@@ -201,9 +208,9 @@ const KYCManagement = () => {
                     variant="contained" 
                     color="success" 
                     startIcon={<ApproveIcon />}
-                    onClick={() => handleAction(selectedSub.id, 'approved')}
+                    onClick={() => handleAction(selectedSub.id, 'verified')}
                   >
-                    Approve
+                    Verify
                   </Button>
                 </>
               )}
