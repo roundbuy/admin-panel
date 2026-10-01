@@ -48,8 +48,10 @@ import {
   Timeline as AnalyticsIcon,
   Event as EventIcon,
   Whatshot as TrendingIcon,
+  TrendingUp as TrendingUpIcon,
   VerifiedUser as VerifiedUserIcon,
   LocalShipping as ShippingIcon,
+  Traffic as TrafficIcon,
 } from '@mui/icons-material';
 import { useSidebar } from '../../context/SidebarContext';
 
@@ -62,6 +64,7 @@ const Sidebar = () => {
   const [settingsOpen, setSettingsOpen] = React.useState(false);
   const [walletsOpen, setWalletsOpen] = React.useState(false);
   const [rewardsOpen, setRewardsOpen] = React.useState(false);
+  const [marketplaceOpen, setMarketplaceOpen] = React.useState(true);
 
   // State for popup menu when minimized
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -71,6 +74,16 @@ const Sidebar = () => {
 
   const menuItems = [
     { title: 'Dashboard', path: '/dashboard', icon: <DashboardIcon /> },
+    {
+      title: 'Marketplace',
+      icon: <AnalyticsIcon />,
+      open: marketplaceOpen,
+      setOpen: setMarketplaceOpen,
+      children: [
+        { title: 'KPI Overview', path: '/marketplace-dashboard' },
+        { title: 'Traffic Analytics', path: '/marketplace/traffic' },
+      ],
+    },
     { title: 'Users', path: '/users', icon: <PeopleIcon /> },
     { title: 'Seller Metrics', path: '/seller-metrics', icon: <ActivityIcon /> },
     { title: 'Onboarding Analytics', path: '/analytics/onboarding', icon: <AnalyticsIcon /> },

@@ -11,6 +11,8 @@ import AdminLayout from './components/Layout/AdminLayout';
 import Login from './pages/Auth/Login';
 import Debug from './pages/Auth/Debug';
 import Dashboard from './pages/Dashboard/Dashboard';
+import MarketplaceDashboard from './pages/Dashboard/MarketplaceDashboard';
+import TrafficAnalyticsPage from './pages/Dashboard/TrafficAnalyticsPage';
 import SellerMetricsPage from './pages/SellerMetricsPage';
 import OnboardingAnalyticsScreen from './pages/OnboardingAnalyticsScreen';
 import UserList from './pages/Users/UserList';
@@ -126,6 +128,8 @@ function App() {
               {/* Dashboard */}
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
+              <Route path="marketplace-dashboard" element={<MarketplaceDashboard />} />
+              <Route path="marketplace/traffic" element={<TrafficAnalyticsPage />} />
               <Route path="seller-metrics" element={<SellerMetricsPage />} />
               <Route path="analytics/onboarding" element={<OnboardingAnalyticsScreen />} />
 

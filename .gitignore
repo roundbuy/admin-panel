@@ -10,6 +10,9 @@ build/
 .env.local
 .env.production
 
+# One-time production bootstrap staging
+.deploy-tmp/
+
 # Logs
 logs/
 *.log

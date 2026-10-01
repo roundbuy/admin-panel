@@ -3,7 +3,9 @@ import React, { useState, useEffect } from 'react';
 import {
     Box,
     Typography,
-    Grid
+    Grid,
+    Chip,
+    Tooltip
 } from '@mui/material';
 import { toast } from 'react-toastify';
 import DataTable from '../components/Common/DataTable';
@@ -58,14 +60,36 @@ const SellerMetricsPage = () => {
         return `${(mins / 60).toFixed(1)}h`;
     };
 
+    const ScoreBadge = ({ score }) => {
+        const s = parseFloat(score || 0);
+        const color = s >= 80 ? 'success' : s >= 60 ? 'warning' : 'error';
+        const label = s >= 80 ? 'Elite' : s >= 60 ? 'Good' : 'At Risk';
+        return (
+            <Tooltip title={`${label} seller — score ${s.toFixed(1)}/100`}>
+                <Chip
+                    label={`${s.toFixed(1)}`}
+                    color={color}
+                    size="small"
+                    variant="filled"
+                    sx={{ fontWeight: 'bold', minWidth: 52 }}
+                />
+            </Tooltip>
+        );
+    };
+
     const columns = [
+        {
+            id: 'seller_score',
+            label: 'Seller Score',
+            minWidth: 110,
+            format: (value) => <ScoreBadge score={value} />
+        },
         {
             id: 'full_name',
             label: 'Seller Name',
             minWidth: 150,
             format: (value, row) => (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    {/* Avatar could go here if available in row */}
                     <Box>{row.full_name || 'N/A'}</Box>
                 </Box>
             )
@@ -74,6 +98,12 @@ const SellerMetricsPage = () => {
             id: 'email',
             label: 'Email',
             minWidth: 200
+        },
+        {
+            id: 'average_rating',
+            label: 'Avg Rating',
+            minWidth: 100,
+            format: (value) => value ? `${parseFloat(value).toFixed(2)} ★` : 'N/A'
         },
         {
             id: 'avg_response_time_minutes',
